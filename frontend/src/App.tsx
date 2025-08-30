@@ -9,7 +9,6 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import SensorDetails from "./pages/SensorDetails";
 import AlertsHistory from "./pages/AlertsHistory";
-import Admin from "./pages/Admin";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 
@@ -26,7 +25,6 @@ const App = () => (
           <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
           <Route path="/sensors" element={<Layout><SensorDetails /></Layout>} />
           <Route path="/alerts" element={<Layout><AlertsHistory /></Layout>} />
-          <Route path="/admin" element={<Layout><Admin /></Layout>} />
           <Route path="/about" element={<Layout><About /></Layout>} />
           <Route path="*" element={<NotFound />} />
         </Routes>

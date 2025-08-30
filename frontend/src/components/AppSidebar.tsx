@@ -26,7 +26,6 @@ const items = [
   { title: "Dashboard", url: "/dashboard", icon: Map },
   { title: "Sensor Details", url: "/sensors", icon: Radio },
   { title: "Alert History", url: "/alerts", icon: AlertTriangle },
-  { title: "Admin", url: "/admin", icon: Shield },
   { title: "About", url: "/about", icon: Info },
 ];
 

@@ -1,3 +1,8 @@
+import { useCallback } from "react";
+import Particles from "react-tsparticles";
+import type { Engine } from "tsparticles-engine";
+import { loadSlim } from "tsparticles-slim";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,275 +19,208 @@ import {
 } from "lucide-react";
 
 export default function About() {
+  // Initialize particle engine
+  const particlesInit = useCallback(async (engine: Engine) => {
+    await loadSlim(engine);
+  }, []);
+
+  // Particle configuration (same as Index.tsx)
+  const particlesOptions = {
+    background: {
+      color: {
+        value: "#0a192f",
+      },
+    },
+    fpsLimit: 60,
+    interactivity: {
+      events: {
+        onHover: {
+          enable: true,
+          mode: "grab",
+        },
+        resize: true,
+      },
+      modes: {
+        grab: {
+          distance: 140,
+          links: {
+            opacity: 0.7,
+          },
+        },
+      },
+    },
+    particles: {
+      color: {
+        value: "#ffffff",
+      },
+      links: {
+        color: "#ffffff",
+        distance: 150,
+        enable: true,
+        opacity: 0.2,
+        width: 1,
+      },
+      move: {
+        direction: "none",
+        enable: true,
+        outModes: {
+          default: "out",
+        },
+        random: false,
+        speed: 1,
+        straight: false,
+      },
+      number: {
+        density: {
+          enable: true,
+          area: 800,
+        },
+        value: 80,
+      },
+      opacity: {
+        value: 0.3,
+      },
+      shape: {
+        type: "circle",
+      },
+      size: {
+        value: { min: 1, max: 3 },
+      },
+    },
+    detectRetina: true,
+  };
+
   return (
-    <div className="p-6 space-y-6">
-      {/* Hero Section */}
-      <div className="text-center space-y-4">
-        <div className="flex items-center justify-center gap-3">
-          <Waves className="h-12 w-12 text-primary" />
-          <h1 className="text-4xl font-bold text-foreground">CoastalWatch</h1>
-        </div>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Advanced coastal monitoring system protecting communities through real-time environmental surveillance and early warning systems.
-        </p>
-      </div>
+    <div className="min-h-screen relative overflow-hidden bg-[#0a192f]">
+      {/* Particle background */}
+      <Particles
+        id="tsparticles"
+        init={particlesInit}
+        options={particlesOptions}
+        className="absolute top-0 left-0 w-full h-full z-0"
+      />
 
-      {/* Mission & Vision */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader className="text-center">
-            <Target className="h-8 w-8 text-primary mx-auto" />
-            <CardTitle>Mission</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-muted-foreground">
-              To provide comprehensive coastal monitoring solutions that protect lives, property, and ecosystems through cutting-edge technology and real-time data analysis.
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="text-center">
-            <Eye className="h-8 w-8 text-primary mx-auto" />
-            <CardTitle>Vision</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-muted-foreground">
-              A world where coastal communities are equipped with the knowledge and tools necessary to respond effectively to environmental threats and climate change.
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="text-center">
-            <Heart className="h-8 w-8 text-primary mx-auto" />
-            <CardTitle>Values</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center">
-            <p className="text-muted-foreground">
-              Innovation, reliability, community safety, environmental stewardship, and transparency in all our operations and communications.
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Project Overview */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Project Overview</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-muted-foreground">
-            CoastalWatch represents a collaborative effort between environmental scientists, technology experts, and local authorities 
-            to create a comprehensive coastal monitoring network. Our system integrates multiple sensor technologies to provide 
-            real-time data on water levels, wave patterns, weather conditions, and potential environmental threats.
+      {/* About Content */}
+      <div className="relative p-6 space-y-6 z-10">
+        {/* Hero Section */}
+        <div className="text-center space-y-4">
+          <div className="flex items-center justify-center gap-3">
+            <Waves className="h-12 w-12 text-primary" />
+            <h1 className="text-4xl font-bold text-white drop-shadow-lg">CoastalWatch</h1>
+          </div>
+          <p className="text-xl text-blue-200 max-w-2xl mx-auto">
+            Advanced coastal monitoring system protecting communities through real-time 
+            environmental surveillance and early warning systems.
           </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            <div>
-              <h3 className="font-semibold mb-3">Key Features</h3>
-              <ul className="space-y-2 text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <div className="h-2 w-2 bg-primary rounded-full"></div>
-                  Real-time sensor monitoring
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="h-2 w-2 bg-primary rounded-full"></div>
-                  Automated alert system
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="h-2 w-2 bg-primary rounded-full"></div>
-                  Interactive dashboard
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="h-2 w-2 bg-primary rounded-full"></div>
-                  Historical data analysis
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="h-2 w-2 bg-primary rounded-full"></div>
-                  Mobile-responsive design
-                </li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold mb-3">Technology Stack</h3>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="outline">React</Badge>
-                <Badge variant="outline">TypeScript</Badge>
-                <Badge variant="outline">Tailwind CSS</Badge>
-                <Badge variant="outline">Mapbox GL</Badge>
-                <Badge variant="outline">WebSocket</Badge>
-                <Badge variant="outline">IoT Sensors</Badge>
-                <Badge variant="outline">Real-time Analytics</Badge>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Data Sources & Partners */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Data Sources & Partners</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h3 className="font-semibold mb-3">Data Sources</h3>
-              <ul className="space-y-2 text-muted-foreground">
-                <li>• IoT water level sensors</li>
-                <li>• Wave measurement buoys</li>
-                <li>• Weather monitoring stations</li>
-                <li>• Satellite imagery integration</li>
-                <li>• Tide gauge networks</li>
-                <li>• Environmental quality sensors</li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold mb-3">Key Partners</h3>
-              <ul className="space-y-2 text-muted-foreground">
-                <li>• National Environmental Agency</li>
-                <li>• Maritime and Port Authority</li>
-                <li>• Local Research Universities</li>
-                <li>• Community Emergency Response Teams</li>
-                <li>• International Climate Organizations</li>
-                <li>• Technology Integration Partners</li>
-              </ul>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        {/* Mission, Vision, Values */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Card className="bg-slate-900/50 text-white shadow-lg">
+            <CardHeader className="text-center">
+              <Target className="h-8 w-8 text-primary mx-auto" />
+              <CardTitle>Mission</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center text-blue-200">
+              To provide comprehensive coastal monitoring solutions that protect lives, 
+              property, and ecosystems through cutting-edge technology and real-time data analysis.
+            </CardContent>
+          </Card>
 
-      {/* How to Use */}
-      <Card>
-        <CardHeader>
-          <CardTitle>How to Use the System</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h3 className="font-semibold mb-3">For General Users</h3>
-              <ol className="space-y-2 text-muted-foreground">
-                <li>1. Access the Dashboard to view current conditions</li>
-                <li>2. Monitor active alerts and warnings</li>
-                <li>3. Click on sensor markers for detailed information</li>
-                <li>4. Review historical data and trends</li>
-                <li>5. Enable notifications for important alerts</li>
-              </ol>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold mb-3">For Emergency Responders</h3>
-              <ol className="space-y-2 text-muted-foreground">
-                <li>1. Monitor real-time threat levels</li>
-                <li>2. Access detailed sensor data and analytics</li>
-                <li>3. Coordinate response using alert management</li>
-                <li>4. Generate reports for incident documentation</li>
-                <li>5. Manage system configurations and thresholds</li>
-              </ol>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          <Card className="bg-slate-900/50 text-white shadow-lg">
+            <CardHeader className="text-center">
+              <Eye className="h-8 w-8 text-primary mx-auto" />
+              <CardTitle>Vision</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center text-blue-200">
+              A world where coastal communities are equipped with the knowledge and tools 
+              necessary to respond effectively to environmental threats and climate change.
+            </CardContent>
+          </Card>
 
-      {/* FAQ */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Frequently Asked Questions</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div>
-              <h4 className="font-medium mb-2">How often is the data updated?</h4>
-              <p className="text-muted-foreground">
-                Sensor data is updated every 5 minutes during normal conditions and every minute during alert situations. 
-                The system provides real-time updates through WebSocket connections.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="font-medium mb-2">What triggers an alert?</h4>
-              <p className="text-muted-foreground">
-                Alerts are triggered when sensor readings exceed predefined thresholds, unusual patterns are detected, 
-                or when multiple sensors indicate a developing threat situation.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="font-medium mb-2">Can I access historical data?</h4>
-              <p className="text-muted-foreground">
-                Yes, the system maintains comprehensive historical records. Users can access data going back up to 5 years 
-                for analysis and reporting purposes.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="font-medium mb-2">Is the system mobile-friendly?</h4>
-              <p className="text-muted-foreground">
-                Absolutely! The system is fully responsive and optimized for mobile devices, tablets, and desktop computers.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          <Card className="bg-slate-900/50 text-white shadow-lg">
+            <CardHeader className="text-center">
+              <Heart className="h-8 w-8 text-primary mx-auto" />
+              <CardTitle>Values</CardTitle>
+            </CardHeader>
+            <CardContent className="text-center text-blue-200">
+              Innovation, reliability, community safety, environmental stewardship, and transparency 
+              in all our operations and communications.
+            </CardContent>
+          </Card>
+        </div>
 
-      {/* Contact Information */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            Contact & Support
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <Mail className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="font-medium">Technical Support</p>
-                  <p className="text-muted-foreground">support@coastalwatch.com</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3">
-                <Phone className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="font-medium">Emergency Hotline</p>
-                  <p className="text-muted-foreground">+65 6XXX-XXXX (24/7)</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-3">
-                <Shield className="h-5 w-5 text-primary" />
-                <div>
-                  <p className="font-medium">Admin Access</p>
-                  <p className="text-muted-foreground">admin@coastalwatch.com</p>
-                </div>
-              </div>
+        {/* Project Overview */}
+        <Card className="bg-slate-900/50 text-white shadow-lg">
+          <CardHeader>
+            <Shield className="h-6 w-6 text-primary inline-block mr-2" />
+            <CardTitle>Project Overview</CardTitle>
+          </CardHeader>
+          <CardContent className="text-blue-200">
+            CoastalWatch integrates sensor networks, satellite data, and machine learning models 
+            to monitor coastal regions for threats including:
+            <ul className="list-disc list-inside mt-2 space-y-1">
+              <li>Storm surges and extreme weather</li>
+              <li>Coastal erosion and flooding risks</li>
+              <li>Marine pollution and illegal activities</li>
+              <li>Blue carbon ecosystem degradation</li>
+            </ul>
+          </CardContent>
+        </Card>
+
+        {/* Partners */}
+        <Card className="bg-slate-900/50 text-white shadow-lg">
+          <CardHeader>
+            <Users className="h-6 w-6 text-primary inline-block mr-2" />
+            <CardTitle>Our Partners</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-wrap gap-3">
+            <Badge variant="secondary">NOAA</Badge>
+            <Badge variant="secondary">NASA Earth Science</Badge>
+            <Badge variant="secondary">Local Coastal Authorities</Badge>
+            <Badge variant="secondary">International NGOs</Badge>
+          </CardContent>
+        </Card>
+
+        {/* FAQ */}
+        <Card className="bg-slate-900/50 text-white shadow-lg">
+          <CardHeader>
+            <CardTitle>FAQ</CardTitle>
+          </CardHeader>
+          <CardContent className="text-blue-200 space-y-4">
+            <div>
+              <p className="font-semibold text-white">How does CoastalWatch detect threats?</p>
+              <p>Through AI models analyzing real-time data from satellites, sensors, and historical records.</p>
             </div>
-            
-            <div className="space-y-4">
-              <Button className="w-full" variant="outline">
-                <ExternalLink className="h-4 w-4 mr-2" />
-                Documentation Portal
-              </Button>
-              
-              <Button className="w-full" variant="outline">
-                <Users className="h-4 w-4 mr-2" />
-                Community Forum
-              </Button>
-              
-              <Button className="w-full" variant="outline">
-                <Mail className="h-4 w-4 mr-2" />
-                Submit Feedback
-              </Button>
+            <div>
+              <p className="font-semibold text-white">Who can access the alerts?</p>
+              <p>Coastal authorities, government agencies, and registered community organizations.</p>
             </div>
-          </div>
-        </CardContent>
-      </Card>
+            <div>
+              <p className="font-semibold text-white">Is the system scalable?</p>
+              <p>Yes, it is designed to be deployed across global coastal regions with modular integration.</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Contact */}
+        <Card className="bg-slate-900/50 text-white shadow-lg">
+          <CardHeader>
+            <CardTitle>Contact Us</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3 text-blue-200">
+            <div className="flex items-center gap-2">
+              <Mail className="h-5 w-5 text-primary" /> support@coastalwatch.org
+            </div>
+            <div className="flex items-center gap-2">
+              <Phone className="h-5 w-5 text-primary" /> +1 (234) 567-890
+            </div>
+            <Button variant="outline" className="flex items-center gap-2 mt-3">
+              Visit Website <ExternalLink className="h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
