@@ -2,10 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
+/* Centralized Design Tokens in HSL */
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -13,39 +10,36 @@ All colors MUST be HSL.
 
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
-
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
     --primary: 210 80% 35%;
     --primary-foreground: 210 40% 98%;
-
     --secondary: 199 89% 48%;
     --secondary-foreground: 210 40% 98%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
-
     --accent: 199 89% 48%;
     --accent-foreground: 210 40% 98%;
-
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 210 80% 35%;
-
     --radius: 0.5rem;
 
-    --sidebar-background: 210 30% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 210 80% 35%;
+    /* Sidebar Tokens */
+    --sidebar-bg: 222.2 47.4% 11.2%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-border: 217.2 32.6% 17.5%;
+    --sidebar-accent: 217.2 32.6% 17.5%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-primary: 221.2 83.2% 53.3%;
     --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 199 89% 95%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 210 80% 35%;
+    --sidebar-muted: 217.2 32.6% 17.5%;
+    --sidebar-muted-foreground: 215 20.2% 65.1%;
   }
 
   .dark {
@@ -54,37 +48,31 @@ All colors MUST be HSL.
 
     --card: 220 20% 8%;
     --card-foreground: 210 40% 98%;
-
     --popover: 220 20% 8%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 199 89% 48%;
     --primary-foreground: 220 20% 8%;
-
     --secondary: 210 80% 15%;
     --secondary-foreground: 210 40% 98%;
-
     --muted: 220 20% 10%;
     --muted-foreground: 215 20.2% 65.1%;
-
     --accent: 210 80% 15%;
     --accent-foreground: 210 40% 98%;
-
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 220 20% 15%;
     --input: 220 20% 15%;
     --ring: 199 89% 48%;
-    
-    --sidebar-background: 220 20% 6%;
+
+    /* Sidebar Tokens Dark Mode */
+    --sidebar-bg: 220 20% 6%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 199 89% 48%;
     --sidebar-primary-foreground: 220 20% 8%;
     --sidebar-accent: 220 20% 10%;
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 220 20% 12%;
-    --sidebar-ring: 199 89% 48%;
   }
 }
 
@@ -92,8 +80,51 @@ All colors MUST be HSL.
   * {
     @apply border-border;
   }
-
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  /* Sidebar Wrapper */
+  .sidebar {
+    @apply fixed top-0 left-0 h-full w-64 flex flex-col border-r backdrop-blur-xl transition-all duration-300 z-50;
+    background: linear-gradient(to bottom, hsl(var(--sidebar-bg)), hsl(var(--sidebar-bg)));
+    border-right: 1px solid hsl(var(--sidebar-border));
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.4);
+  }
+
+  .sidebar-header {
+    @apply flex items-center justify-center py-5 text-2xl font-bold tracking-wide;
+    color: hsl(var(--sidebar-foreground));
+    border-bottom: 1px solid hsl(var(--sidebar-border));
+  }
+
+  .sidebar-nav {
+    @apply flex flex-col flex-1 gap-1 px-3 mt-4;
+  }
+
+  .sidebar-link {
+    @apply relative flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 cursor-pointer;
+    color: hsl(var(--sidebar-muted-foreground));
+  }
+  .sidebar-link:hover {
+    background: hsl(var(--sidebar-accent));
+    color: hsl(var(--sidebar-accent-foreground));
+  }
+
+  .sidebar-link-active {
+    background: hsl(var(--sidebar-primary));
+    color: hsl(var(--sidebar-primary-foreground));
+    font-weight: 600;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+  .sidebar-link-active::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background: hsl(var(--sidebar-primary));
+    border-radius: 0 4px 4px 0;
   }
 }
