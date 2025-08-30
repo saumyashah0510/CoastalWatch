@@ -1,243 +1,99 @@
-// import { useState } from "react";
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-// import { Badge } from "@/components/ui/badge";
-// import { Button } from "@/components/ui/button";
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-// import { Activity, MapPin, Calendar, TrendingUp } from "lucide-react";
-
-// interface SensorReading {
-//   timestamp: string;
-//   value: number;
-//   unit: string;
-// }
-
-// interface SensorDetail {
-//   id: string;
-//   name: string;
-//   type: string;
-//   location: string;
-//   coordinates: { lat: number; lng: number };
-//   status: "normal" | "warning" | "alert";
-//   installedDate: string;
-//   lastMaintenance: string;
-//   readings: SensorReading[];
-// }
-
-// export default function SensorDetails() {
-//   const [selectedSensor, setSelectedSensor] = useState<string>("S001");
-  
-//   const sensors: SensorDetail[] = [
-//     {
-//       id: "S001",
-//       name: "Marina Bay Monitor", 
-//       type: "Water Level Sensor",
-//       location: "Marina Bay, Singapore",
-//       coordinates: { lat: 1.28, lng: 103.85 },
-//       status: "alert",
-//       installedDate: "2023-03-15",
-//       lastMaintenance: "2024-01-10",
-//       readings: [
-//         { timestamp: "14:30", value: 2.3, unit: "m" },
-//         { timestamp: "14:00", value: 2.1, unit: "m" },
-//         { timestamp: "13:30", value: 1.9, unit: "m" },
-//         { timestamp: "13:00", value: 1.7, unit: "m" },
-//         { timestamp: "12:30", value: 1.5, unit: "m" },
-//       ]
-//     },
-//     {
-//       id: "S002",
-//       name: "East Coast Sensor",
-//       type: "Water Level Sensor", 
-//       location: "East Coast Park, Singapore",
-//       coordinates: { lat: 1.30, lng: 103.90 },
-//       status: "normal",
-//       installedDate: "2023-05-20",
-//       lastMaintenance: "2024-01-08",
-//       readings: [
-//         { timestamp: "14:30", value: 0.8, unit: "m" },
-//         { timestamp: "14:00", value: 0.7, unit: "m" },
-//         { timestamp: "13:30", value: 0.9, unit: "m" },
-//         { timestamp: "13:00", value: 0.8, unit: "m" },
-//         { timestamp: "12:30", value: 0.6, unit: "m" },
-//       ]
-//     }
-//   ];
-
-//   const currentSensor = sensors.find(s => s.id === selectedSensor) || sensors[0];
-
-//   const getStatusColor = (status: string) => {
-//     switch (status) {
-//       case "alert": return "destructive";
-//       case "warning": return "secondary"; 
-//       case "normal": return "outline";
-//       default: return "outline";
-//     }
-//   };
-
-//   return (
-//     <div className="p-6 space-y-6">
-//       <div className="flex items-center justify-between">
-//         <h1 className="text-3xl font-bold text-foreground">Sensor Details</h1>
-//         <Select value={selectedSensor} onValueChange={setSelectedSensor}>
-//           <SelectTrigger className="w-64">
-//             <SelectValue placeholder="Select a sensor" />
-//           </SelectTrigger>
-//           <SelectContent>
-//             {sensors.map((sensor) => (
-//               <SelectItem key={sensor.id} value={sensor.id}>
-//                 {sensor.name}
-//               </SelectItem>
-//             ))}
-//           </SelectContent>
-//         </Select>
-//       </div>
-
-//       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-//         {/* Sensor Information */}
-//         <Card className="lg:col-span-1">
-//           <CardHeader>
-//             <CardTitle className="flex items-center gap-2">
-//               <Activity className="h-5 w-5" />
-//               Sensor Information
-//             </CardTitle>
-//           </CardHeader>
-//           <CardContent className="space-y-4">
-//             <div>
-//               <h3 className="font-semibold text-lg">{currentSensor.name}</h3>
-//               <Badge variant={getStatusColor(currentSensor.status)} className="mt-1">
-//                 {currentSensor.status.toUpperCase()}
-//               </Badge>
-//             </div>
-            
-//             <div className="space-y-2">
-//               <div className="flex items-start gap-2">
-//                 <MapPin className="h-4 w-4 mt-1 text-muted-foreground" />
-//                 <div>
-//                   <p className="text-sm font-medium">Location</p>
-//                   <p className="text-sm text-muted-foreground">{currentSensor.location}</p>
-//                   <p className="text-xs text-muted-foreground">
-//                     {currentSensor.coordinates.lat}°N, {currentSensor.coordinates.lng}°E
-//                   </p>
-//                 </div>
-//               </div>
-              
-//               <div className="flex items-start gap-2">
-//                 <Calendar className="h-4 w-4 mt-1 text-muted-foreground" />
-//                 <div>
-//                   <p className="text-sm font-medium">Installed</p>
-//                   <p className="text-sm text-muted-foreground">{currentSensor.installedDate}</p>
-//                 </div>
-//               </div>
-              
-//               <div className="flex items-start gap-2">
-//                 <TrendingUp className="h-4 w-4 mt-1 text-muted-foreground" />
-//                 <div>
-//                   <p className="text-sm font-medium">Last Maintenance</p>
-//                   <p className="text-sm text-muted-foreground">{currentSensor.lastMaintenance}</p>
-//                 </div>
-//               </div>
-//             </div>
-
-//             <Button className="w-full" variant="outline">
-//               Schedule Maintenance
-//             </Button>
-//           </CardContent>
-//         </Card>
-
-//         {/* Recent Readings */}
-//         <Card className="lg:col-span-2">
-//           <CardHeader>
-//             <CardTitle>Recent Readings</CardTitle>
-//           </CardHeader>
-//           <CardContent>
-//             {/* Chart Placeholder */}
-//             <div className="h-64 bg-muted rounded-lg flex items-center justify-center border-2 border-dashed border-border mb-6">
-//               <div className="text-center">
-//                 <TrendingUp className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-//                 <p className="text-muted-foreground">Time-series chart will be displayed here</p>
-//                 <p className="text-sm text-muted-foreground">Showing sensor readings over time</p>
-//               </div>
-//             </div>
-
-//             {/* Readings Table */}
-//             <div className="space-y-2">
-//               <h4 className="font-medium">Latest Readings</h4>
-//               <div className="grid grid-cols-3 gap-4 text-sm font-medium text-muted-foreground pb-2 border-b">
-//                 <div>Time</div>
-//                 <div>Value</div>
-//                 <div>Status</div>
-//               </div>
-//               {currentSensor.readings.map((reading, index) => (
-//                 <div key={index} className="grid grid-cols-3 gap-4 text-sm py-2 border-b">
-//                   <div>{reading.timestamp}</div>
-//                   <div className="font-medium">{reading.value} {reading.unit}</div>
-//                   <div>
-//                     {reading.value > 2.0 ? (
-//                       <Badge variant="destructive" className="text-xs">Alert</Badge>
-//                     ) : reading.value > 1.5 ? (
-//                       <Badge variant="secondary" className="text-xs">Warning</Badge>
-//                     ) : (
-//                       <Badge variant="outline" className="text-xs">Normal</Badge>
-//                     )}
-//                   </div>
-//                 </div>
-//               ))}
-//             </div>
-//           </CardContent>
-//         </Card>
-//       </div>
-
-//       {/* Sensor Location Map */}
-//       <Card>
-//         <CardHeader>
-//           <CardTitle>Sensor Location</CardTitle>
-//         </CardHeader>
-//         <CardContent>
-//           <div className="h-64 bg-muted rounded-lg flex items-center justify-center border-2 border-dashed border-border">
-//             <div className="text-center">
-//               <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-//               <p className="text-muted-foreground">Detailed location map will be displayed here</p>
-//               <p className="text-sm text-muted-foreground">Showing precise sensor placement</p>
-//             </div>
-//           </div>
-//         </CardContent>
-//       </Card>
-//     </div>
-//   );
-// }
-
-import { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Particles from "react-tsparticles";
 import type { Engine } from "tsparticles-engine";
 import { loadSlim } from "tsparticles-slim";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import axios from "axios";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import {
+  LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,
+} from "recharts";
+import {
+  Card, CardContent, CardHeader, CardTitle
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Activity, MapPin, Calendar, TrendingUp } from "lucide-react";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue
+} from "@/components/ui/select";
+import { Activity, MapPin, Calendar, Waves, Wind, AlertCircle, TrendingUp, TrendingDown } from "lucide-react";
 
+// Types
 interface SensorReading {
   timestamp: string;
-  value: number;
-  unit: string;
+  water_level: number;
+  wind_speed: number;
 }
 
 interface SensorDetail {
-  id: string;
-  name: string;
-  type: string;
-  location: string;
-  coordinates: { lat: number; lng: number };
+  id: number;
+  location_name: string;
+  latitude: number;
+  longitude: number;
   status: "normal" | "warning" | "alert";
-  installedDate: string;
-  lastMaintenance: string;
+  installed_date?: string;
+  last_maintenance?: string;
   readings: SensorReading[];
 }
 
 export default function SensorDetails() {
-  const [selectedSensor, setSelectedSensor] = useState<string>("S001");
+  const [sensors, setSensors] = useState<SensorDetail[]>([]);
+  const [selectedSensorId, setSelectedSensorId] = useState<number | null>(null);
 
+  // Helper: Get current sensor
+  const currentSensor = sensors.find((s) => s.id === selectedSensorId);
+
+  // Helper: Badge colors
+  const getStatusColor = (status: "normal" | "warning" | "alert") => {
+    switch (status) {
+      case "normal": return "default";
+      case "warning": return "secondary";
+      case "alert": return "destructive";
+      default: return "default";
+    }
+  };
+
+  // Helper: Calculate statistics
+  const calculateStats = (readings: SensorReading[]) => {
+    if (readings.length === 0) return null;
+    
+    const waterLevels = readings.map(r => r.water_level);
+    const windSpeeds = readings.map(r => r.wind_speed);
+    
+    const avgWater = waterLevels.reduce((a, b) => a + b, 0) / waterLevels.length;
+    const avgWind = windSpeeds.reduce((a, b) => a + b, 0) / windSpeeds.length;
+    
+    const maxWater = Math.max(...waterLevels);
+    const maxWind = Math.max(...windSpeeds);
+    
+    const minWater = Math.min(...waterLevels);
+    const minWind = Math.min(...windSpeeds);
+    
+    // Calculate trends (comparing first and last reading)
+    const waterTrend = waterLevels.length > 1 
+      ? waterLevels[waterLevels.length - 1] - waterLevels[0] 
+      : 0;
+      
+    const windTrend = windSpeeds.length > 1 
+      ? windSpeeds[windSpeeds.length - 1] - windSpeeds[0] 
+      : 0;
+    
+    return {
+      avgWater: avgWater.toFixed(2),
+      avgWind: avgWind.toFixed(2),
+      maxWater: maxWater.toFixed(2),
+      maxWind: maxWind.toFixed(2),
+      minWater: minWater.toFixed(2),
+      minWind: minWind.toFixed(2),
+      waterTrend,
+      windTrend,
+      lastReading: readings[readings.length - 1]
+    };
+  };
+
+  const stats = currentSensor ? calculateStats(currentSensor.readings) : null;
+
+  // Particle Background Init
   const particlesInit = useCallback(async (engine: Engine) => {
     await loadSlim(engine);
   }, []);
@@ -251,18 +107,8 @@ export default function SensorDetails() {
     },
     particles: {
       color: { value: "#ffffff" },
-      links: {
-        color: "#ffffff",
-        distance: 150,
-        enable: true,
-        opacity: 0.2,
-        width: 1,
-      },
-      move: {
-        enable: true,
-        speed: 1,
-        outModes: { default: "out" },
-      },
+      links: { color: "#ffffff", distance: 150, enable: true, opacity: 0.2, width: 1 },
+      move: { enable: true, speed: 1, outModes: { default: "out" } },
       number: { density: { enable: true, area: 800 }, value: 80 },
       opacity: { value: 0.3 },
       shape: { type: "circle" },
@@ -271,57 +117,39 @@ export default function SensorDetails() {
     detectRetina: true,
   };
 
-  const sensors: SensorDetail[] = [
-    {
-      id: "S001",
-      name: "Marina Bay Monitor",
-      type: "Water Level Sensor",
-      location: "Marina Bay, Singapore",
-      coordinates: { lat: 1.28, lng: 103.85 },
-      status: "alert",
-      installedDate: "2023-03-15",
-      lastMaintenance: "2024-01-10",
-      readings: [
-        { timestamp: "14:30", value: 2.3, unit: "m" },
-        { timestamp: "14:00", value: 2.1, unit: "m" },
-        { timestamp: "13:30", value: 1.9, unit: "m" },
-        { timestamp: "13:00", value: 1.7, unit: "m" },
-        { timestamp: "12:30", value: 1.5, unit: "m" },
-      ],
-    },
-    {
-      id: "S002",
-      name: "East Coast Sensor",
-      type: "Water Level Sensor",
-      location: "East Coast Park, Singapore",
-      coordinates: { lat: 1.3, lng: 103.9 },
-      status: "normal",
-      installedDate: "2023-05-20",
-      lastMaintenance: "2024-01-08",
-      readings: [
-        { timestamp: "14:30", value: 0.8, unit: "m" },
-        { timestamp: "14:00", value: 0.7, unit: "m" },
-        { timestamp: "13:30", value: 0.9, unit: "m" },
-        { timestamp: "13:00", value: 0.8, unit: "m" },
-        { timestamp: "12:30", value: 0.6, unit: "m" },
-      ],
-    },
-  ];
+  // Fetch and Normalize Data
+  useEffect(() => {
+    axios.get("http://127.0.0.1:8000/sensors")
+      .then((res) => {
+        console.log("API Response:", res.data);
+        const rawData = Array.isArray(res.data) ? res.data : [];
 
-  const currentSensor = sensors.find((s) => s.id === selectedSensor) || sensors[0];
+        // Group readings by sensor_id
+        const grouped = rawData.reduce((acc: Record<number, SensorDetail>, reading: any) => {
+          if (!acc[reading.sensor_id]) {
+            acc[reading.sensor_id] = {
+              id: reading.sensor_id,
+              location_name: reading.location_name,
+              latitude: reading.latitude,
+              longitude: reading.longitude,
+              status: reading.status || "normal",
+              readings: [],
+            };
+          }
+          acc[reading.sensor_id].readings.push({
+            timestamp: reading.timestamp,
+            water_level: reading.water_level,
+            wind_speed: reading.wind_speed,
+          });
+          return acc;
+        }, {});
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "alert":
-        return "destructive";
-      case "warning":
-        return "secondary";
-      case "normal":
-        return "outline";
-      default:
-        return "outline";
-    }
-  };
+        const sensorsArray = Object.values(grouped);
+        setSensors(sensorsArray);
+        if (sensorsArray.length > 0) setSelectedSensorId(sensorsArray[0].id);
+      })
+      .catch((err) => console.error(err));
+  }, []);
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-[#0a192f]">
@@ -333,140 +161,241 @@ export default function SensorDetails() {
         className="absolute top-0 left-0 w-full h-full z-0"
       />
 
-      {/* Content */}
+      {/* Page Content */}
       <div className="relative z-10 p-6 space-y-6 text-white">
+        {/* Header with dropdown */}
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold">Sensor Details</h1>
-          <Select value={selectedSensor} onValueChange={setSelectedSensor}>
+          <Select
+            value={selectedSensorId?.toString() || ""}
+            onValueChange={(v) => setSelectedSensorId(parseInt(v))}
+          >
             <SelectTrigger className="w-64">
               <SelectValue placeholder="Select a sensor" />
             </SelectTrigger>
             <SelectContent>
               {sensors.map((sensor) => (
-                <SelectItem key={sensor.id} value={sensor.id}>
-                  {sensor.name}
+                <SelectItem key={sensor.id} value={sensor.id.toString()}>
+                  {sensor.location_name}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Sensor Info */}
-          <Card className="lg:col-span-1 bg-slate-900/50 text-white border border-white/10">
+        {currentSensor && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Sensor Info */}
+            <Card className="lg:col-span-1 bg-slate-900/50 border border-white/10">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="h-5 w-5" /> Sensor Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <h3 className="font-semibold text-lg">{currentSensor.location_name}</h3>
+                  <Badge variant={getStatusColor(currentSensor.status)} className="mt-1">
+                    {currentSensor.status.toUpperCase()}
+                  </Badge>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-start gap-2">
+                    <MapPin className="h-4 w-4 mt-1" />
+                    <div>
+                      <p className="text-sm font-medium">Location</p>
+                      <p className="text-sm text-muted-foreground">{currentSensor.location_name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {currentSensor.latitude}°N, {currentSensor.longitude}°E
+                      </p>
+                    </div>
+                  </div>
+                  {currentSensor.installed_date && (
+                    <div className="flex items-start gap-2">
+                      <Calendar className="h-4 w-4 mt-1" />
+                      <div>
+                        <p className="text-sm font-medium">Installed</p>
+                        <p className="text-sm text-muted-foreground">{currentSensor.installed_date}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <Button className="w-full" variant="outline">Schedule Maintenance</Button>
+              </CardContent>
+            </Card>
+
+            {/* Map */}
+            <Card className="lg:col-span-2 bg-slate-900/50 border border-white/10">
+              <CardHeader><CardTitle>Sensor Location</CardTitle></CardHeader>
+              <CardContent>
+                <MapContainer
+                  center={[currentSensor.latitude, currentSensor.longitude]}
+                  zoom={12}
+                  style={{ height: "300px", width: "100%" }}
+                  className="rounded-lg"
+                >
+                  <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution="© OpenStreetMap"
+                  />
+                  <Marker position={[currentSensor.latitude, currentSensor.longitude]}>
+                    <Popup>{currentSensor.location_name}</Popup>
+                  </Marker>
+                </MapContainer>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {/* Graph with Statistics */}
+        {currentSensor && stats && (
+          <Card className="bg-slate-900/50 border border-white/10">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Activity className="h-5 w-5" />
-                Sensor Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <h3 className="font-semibold text-lg">{currentSensor.name}</h3>
-                <Badge variant={getStatusColor(currentSensor.status)} className="mt-1">
-                  {currentSensor.status.toUpperCase()}
-                </Badge>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-start gap-2">
-                  <MapPin className="h-4 w-4 mt-1 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium">Location</p>
-                    <p className="text-sm text-muted-foreground">{currentSensor.location}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {currentSensor.coordinates.lat}°N, {currentSensor.coordinates.lng}°E
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-2">
-                  <Calendar className="h-4 w-4 mt-1 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium">Installed</p>
-                    <p className="text-sm text-muted-foreground">{currentSensor.installedDate}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-2">
-                  <TrendingUp className="h-4 w-4 mt-1 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium">Last Maintenance</p>
-                    <p className="text-sm text-muted-foreground">{currentSensor.lastMaintenance}</p>
-                  </div>
-                </div>
-              </div>
-
-              <Button className="w-full" variant="outline">
-                Schedule Maintenance
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Recent Readings */}
-          <Card className="lg:col-span-2 bg-slate-900/50 text-white border border-white/10">
-            <CardHeader>
-              <CardTitle>Recent Readings</CardTitle>
+              <CardTitle>Water & Wind Trends</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="h-64 bg-slate-800/50 rounded-lg flex items-center justify-center border-2 border-dashed border-border mb-6">
-                <div className="text-center">
-                  <TrendingUp className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <p className="text-muted-foreground">Time-series chart will be displayed here</p>
-                  <p className="text-sm text-muted-foreground">Showing sensor readings over time</p>
-                </div>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                {/* Water Level Stats */}
+                <Card className="bg-slate-800/50 border border-white/10">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <Waves className="h-4 w-4" /> Water Level
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-1">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Current</span>
+                        <span className="font-semibold">{stats.lastReading.water_level}m</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Average</span>
+                        <span>{stats.avgWater}m</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Max/Min</span>
+                        <span>{stats.maxWater}m / {stats.minWater}m</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Trend</span>
+                        <div className="flex items-center">
+                          {stats.waterTrend > 0 ? (
+                            <TrendingUp className="h-4 w-4 text-red-500 mr-1" />
+                          ) : stats.waterTrend < 0 ? (
+                            <TrendingDown className="h-4 w-4 text-green-500 mr-1" />
+                          ) : null}
+                          <span className={stats.waterTrend > 0 ? "text-red-500" : stats.waterTrend < 0 ? "text-green-500" : ""}>
+                            {stats.waterTrend > 0 ? "+" : ""}{stats.waterTrend.toFixed(2)}m
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Wind Speed Stats */}
+                <Card className="bg-slate-800/50 border border-white/10">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <Wind className="h-4 w-4" /> Wind Speed
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-1">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Current</span>
+                        <span className="font-semibold">{stats.lastReading.wind_speed}km/h</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Average</span>
+                        <span>{stats.avgWind}km/h</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Max/Min</span>
+                        <span>{stats.maxWind}km/h / {stats.minWind}km/h</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">Trend</span>
+                        <div className="flex items-center">
+                          {stats.windTrend > 0 ? (
+                            <TrendingUp className="h-4 w-4 text-red-500 mr-1" />
+                          ) : stats.windTrend < 0 ? (
+                            <TrendingDown className="h-4 w-4 text-green-500 mr-1" />
+                          ) : null}
+                          <span className={stats.windTrend > 0 ? "text-red-500" : stats.windTrend < 0 ? "text-green-500" : ""}>
+                            {stats.windTrend > 0 ? "+" : ""}{stats.windTrend.toFixed(2)}km/h
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Status Summary */}
+                <Card className="bg-slate-800/50 border border-white/10 md:col-span-2">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <AlertCircle className="h-4 w-4" /> Status Summary
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <h4 className="text-sm font-medium mb-2">Water Level Status</h4>
+                        <div className="flex items-center">
+                          <div className={`h-3 w-3 rounded-full mr-2 ${
+                            stats.lastReading.water_level > 3.5 ? "bg-red-500" :
+                            stats.lastReading.water_level > 2.5 ? "bg-yellow-500" : "bg-green-500"
+                          }`} />
+                          <span className="text-sm">
+                            {stats.lastReading.water_level > 3.5 ? "High Alert" :
+                             stats.lastReading.water_level > 2.5 ? "Warning" : "Normal"}
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {stats.lastReading.water_level > 3.5 ? "Water level is critically high" :
+                           stats.lastReading.water_level > 2.5 ? "Water level is elevated" : "Water level is within normal range"}
+                        </p>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-medium mb-2">Wind Speed Status</h4>
+                        <div className="flex items-center">
+                          <div className={`h-3 w-3 rounded-full mr-2 ${
+                            stats.lastReading.wind_speed > 30 ? "bg-red-500" :
+                            stats.lastReading.wind_speed > 20 ? "bg-yellow-500" : "bg-green-500"
+                          }`} />
+                          <span className="text-sm">
+                            {stats.lastReading.wind_speed > 30 ? "High Alert" :
+                             stats.lastReading.wind_speed > 20 ? "Warning" : "Normal"}
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {stats.lastReading.wind_speed > 30 ? "Strong winds detected" :
+                           stats.lastReading.wind_speed > 20 ? "Moderate winds" : "Calm conditions"}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
 
-              <div className="space-y-2">
-                <h4 className="font-medium">Latest Readings</h4>
-                <div className="grid grid-cols-3 gap-4 text-sm font-medium text-muted-foreground pb-2 border-b">
-                  <div>Time</div>
-                  <div>Value</div>
-                  <div>Status</div>
-                </div>
-                {currentSensor.readings.map((reading, index) => (
-                  <div key={index} className="grid grid-cols-3 gap-4 text-sm py-2 border-b border-white/10">
-                    <div>{reading.timestamp}</div>
-                    <div className="font-medium">
-                      {reading.value} {reading.unit}
-                    </div>
-                    <div>
-                      {reading.value > 2.0 ? (
-                        <Badge variant="destructive" className="text-xs">
-                          Alert
-                        </Badge>
-                      ) : reading.value > 1.5 ? (
-                        <Badge variant="secondary" className="text-xs">
-                          Warning
-                        </Badge>
-                      ) : (
-                        <Badge variant="outline" className="text-xs">
-                          Normal
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={currentSensor.readings.map((r) => ({
+                  time: new Date(r.timestamp).toLocaleTimeString(),
+                  water: r.water_level,
+                  wind: r.wind_speed,
+                }))}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+                  <XAxis dataKey="time" stroke="#aaa" />
+                  <YAxis stroke="#aaa" />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="water" stroke="#4FD1C5" strokeWidth={3} name="Water Level (m)" />
+                  <Line type="monotone" dataKey="wind" stroke="#F87171" strokeWidth={3} name="Wind Speed (km/h)" />
+                </LineChart>
+              </ResponsiveContainer>
             </CardContent>
           </Card>
-        </div>
-
-        {/* Map */}
-        <Card className="bg-slate-900/50 text-white border border-white/10">
-          <CardHeader>
-            <CardTitle>Sensor Location</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-64 bg-slate-800/50 rounded-lg flex items-center justify-center border-2 border-dashed border-border">
-              <div className="text-center">
-                <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">Detailed location map will be displayed here</p>
-                <p className="text-sm text-muted-foreground">Showing precise sensor placement</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        )}
       </div>
     </div>
   );

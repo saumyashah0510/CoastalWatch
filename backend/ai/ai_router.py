@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 from ..database import get_db
-from .. import schemas,crud
+from .. import schemas,crud,models
 
 ai_router = APIRouter(
     prefix="/ai",
@@ -108,12 +108,15 @@ async def analyze_reading_endpoint(
     db: Session = Depends(get_db)
 ):
     """
-    Analyze a sensor reading, determine anomalies, and create alerts in DB.
+    Analyze a sensor reading, determine anomalies, store reading in DB,
+    and create alerts if anomalies are detected.
     """
     if historical_df is None:
         raise HTTPException(status_code=500, detail="Historical data not loaded.")
 
-    # --- 1. Filter historical data for this specific sensor ---
+    
+
+    # --- 2. Get historical data for this sensor ---
     sensor_history = historical_df[historical_df['sensor_id'] == reading.sensor_id]
 
     if sensor_history.empty:
@@ -122,23 +125,21 @@ async def analyze_reading_endpoint(
             detail=f"No historical data found for sensor_id {reading.sensor_id}"
         )
 
-    # Filter by matching hour
     current_hour = reading.timestamp.hour
     hour_filtered = sensor_history[sensor_history['timestamp'].dt.hour == current_hour]
 
     avg_water = hour_filtered['water_level'].mean() if not hour_filtered.empty else sensor_history['water_level'].mean()
     avg_wind = hour_filtered['wind_speed'].mean() if not hour_filtered.empty else sensor_history['wind_speed'].mean()
 
-    # --- 2. Get AI analysis ---
+    # --- 3. Get AI analysis ---
     analysis_result = await get_anomaly_analysis_extended(
         reading=reading,
         avg_water=avg_water,
         avg_wind=avg_wind
     )
 
-    # --- 3. Create alert in DB if anomaly detected ---
+    # --- 4. If anomaly, create alert ---
     if analysis_result.is_anomaly:
-        print(f"Anomaly detected! Severity: {analysis_result.severity}")
         alert_data = schemas.AlertCreate(
             sensor_id=reading.sensor_id,
             timestamp=reading.timestamp,
@@ -151,9 +152,10 @@ async def analyze_reading_endpoint(
 
 # --- Helper Endpoint to Simulate a New Reading ---
 @ai_router.get("/get_simulated_reading_extended/", response_model=NewSensorReadingExtended)
-def get_simulated_reading_extended(sensor_id: int = None):
+def get_simulated_reading_extended(sensor_id: int = None, db: Session = Depends(get_db)):
     """
-    Generate a simulated sensor reading. If sensor_id is not given, pick a random one.
+    Generate a simulated sensor reading, store it in the database, 
+    and return the reading.
     """
     if historical_df is None:
         raise HTTPException(status_code=500, detail="Historical data not loaded.")
@@ -162,15 +164,26 @@ def get_simulated_reading_extended(sensor_id: int = None):
     if not sensor_id:
         sensor_id = random.choice(available_sensors)
 
-    # Simulate Water Level
+    # Generate simulated values
     water_value = round(random.uniform(2.5, 4.5), 2) if random.random() < 0.15 else round(random.uniform(0.5, 2.0), 2)
-    # Simulate Wind Speed
     wind_value = round(random.uniform(16, 40), 2) if random.random() < 0.15 else round(random.uniform(3, 15), 2)
 
-    return NewSensorReadingExtended(
+    # Store this simulated reading in the database
+    new_reading = models.SensorReading(
         sensor_id=sensor_id,
         timestamp=datetime.now(),
         water_level=water_value,
-        wind_speed=wind_value,
+        wind_speed=wind_value
+    )
+    db.add(new_reading)
+    db.commit()
+    db.refresh(new_reading)
+
+    # Return response
+    return NewSensorReadingExtended(
+        sensor_id=sensor_id,
+        timestamp=new_reading.timestamp,
+        water_level=new_reading.water_level,
+        wind_speed=new_reading.wind_speed,
     )
 

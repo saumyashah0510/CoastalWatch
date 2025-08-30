@@ -24,9 +24,8 @@ class SensorReading(Base):
     id = Column(Integer, primary_key=True, index=True)
     sensor_id = Column(Integer, ForeignKey("sensors.id"), nullable=False)
     timestamp = Column(DateTime, nullable=False)
-    value = Column(Float, nullable=False)
-    unit = Column(String)
-    status = Column(String)
+    water_level = Column(Float,nullable=False)
+    wind_speed = Column(Float,nullable=False)
 
     sensor = relationship("Sensor", back_populates="readings")
 
@@ -40,3 +39,5 @@ class Alert(Base):
     timestamp = Column(DateTime, nullable=False)
 
     sensor = relationship("Sensor", back_populates="alerts")
+
+

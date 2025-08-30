@@ -32,12 +32,9 @@ class SensorRead(SensorBase):
 # Schemas for Alerts
 class AlertRead(BaseModel):
     id: int
-    alert_id_str: str
-    sensor_name: str
     message: str
     severity: str
-    status: str
-    location: str
+    location_name: str
     timestamp: datetime
     class Config:
         orm_mode = True
@@ -49,3 +46,15 @@ class AlertCreate(BaseModel):
     severity: str
     message: str
  
+class SensorData(BaseModel):
+    sensor_id: int
+    timestamp: datetime
+    water_level: float
+    wind_speed: float
+    location_name: str
+    latitude: float
+    longitude: float
+    status: str
+
+    class Config:
+        orm_mode = True

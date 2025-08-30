@@ -11,10 +11,9 @@ router = APIRouter()
 def create_sensor_endpoint(sensor: schemas.SensorCreate, db: Session = Depends(get_db)):
     return crud.create_sensor(db=db, sensor=sensor)
 
-@router.get("/", response_model=List[schemas.SensorRead])
-def read_sensors_endpoint(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    sensors = crud.get_sensors(db, skip=skip, limit=limit)
-    return sensors
+@router.get("/", response_model=List[schemas.SensorData])
+def read_sensors_endpoint( db: Session = Depends(get_db)):
+    return crud.get_sensor_data(db)
 
 @router.get("/{sensor_id}", response_model=schemas.SensorRead)
 def read_sensor_endpoint(sensor_id: int, db: Session = Depends(get_db)):
