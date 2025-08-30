@@ -142,17 +142,7 @@ const Index = () => {
             >
               <Link to="/about">Learn More</Link>
             </Button>
-            <Button
-              variant="outline"
-              size="xl"
-              onClick={fetchData}
-              disabled={loading}
-              className="text-xl px-10 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-blue-300 text-blue-300 hover:bg-blue-500/20"
-              style={{ fontFamily: '"Montserrat", sans-serif' }}
-            >
-              <RefreshCw className={`h-5 w-5 mr-2 ${loading ? "animate-spin" : ""}`} />
-              {loading ? "Loading..." : "Refresh"}
-            </Button>
+            
           </div>
         </div>
       </section>
