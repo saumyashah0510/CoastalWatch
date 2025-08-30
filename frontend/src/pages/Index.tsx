@@ -1,22 +1,76 @@
-import { useCallback } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Particles from "react-tsparticles";
 import type { Container, Engine } from "tsparticles-engine";
 import { loadSlim } from "tsparticles-slim";
+import axios from "axios";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Waves, AlertTriangle, Activity, TrendingUp, ArrowRight } from "lucide-react";
+import { Waves, AlertTriangle, Activity, TrendingUp, ArrowRight, Wind, RefreshCw } from "lucide-react";
 
 import "@fontsource/bebas-neue"; // Heading font
 import "@fontsource/montserrat/400.css"; // Body font
 import "@fontsource/montserrat/700.css"; // Bold for titles and buttons
 
+interface StatsData {
+  alerts: number;
+  sensors: number;
+  avg_water_level: number;
+  avg_wind_speed: number;
+}
+
 const Index = () => {
+  const [stats, setStats] = useState<StatsData>({
+    alerts: 0,
+    sensors: 0,
+    avg_water_level: 0,
+    avg_wind_speed: 0
+  });
+  const [loading, setLoading] = useState(true);
+
   const particlesInit = useCallback(async (engine: Engine) => {
     await loadSlim(engine);
   }, []);
+
+  // Fetch data from API
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      
+      // Fetch all data in parallel
+      const [alertsResponse, sensorsResponse, statsResponse] = await Promise.all([
+        axios.get("http://127.0.0.1:8000/dashboard/alerts"),
+        axios.get("http://127.0.0.1:8000/dashboard/sensors"),
+        axios.get("http://127.0.0.1:8000/dashboard/readings/averages?limit=10")
+      ]);
+      
+      setStats({
+        alerts: alertsResponse.data.length,
+        sensors: sensorsResponse.data.length,
+        avg_water_level: statsResponse.data.avg_water_level,
+        avg_wind_speed: statsResponse.data.avg_wind_speed
+      });
+      
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      
+      // Fallback mock data
+      setStats({
+        alerts: 2,
+        sensors: 5,
+        avg_water_level: 1.2,
+        avg_wind_speed: 24
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const particlesOptions = {
     background: { color: { value: "#0a192f" } },
@@ -88,6 +142,17 @@ const Index = () => {
             >
               <Link to="/about">Learn More</Link>
             </Button>
+            <Button
+              variant="outline"
+              size="xl"
+              onClick={fetchData}
+              disabled={loading}
+              className="text-xl px-10 py-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border-blue-300 text-blue-300 hover:bg-blue-500/20"
+              style={{ fontFamily: '"Montserrat", sans-serif' }}
+            >
+              <RefreshCw className={`h-5 w-5 mr-2 ${loading ? "animate-spin" : ""}`} />
+              {loading ? "Loading..." : "Refresh"}
+            </Button>
           </div>
         </div>
       </section>
@@ -95,81 +160,102 @@ const Index = () => {
       {/* Current Status Overview */}
       <section className="relative py-20 px-6 bg-black/10 backdrop-blur-sm z-10 border-t border-b border-white/10">
         <div className="max-w-6xl mx-auto">
-          <h2
-            className="text-4xl font-bold text-white text-center mb-14 drop-shadow-md"
-            style={{ fontFamily: '"Montserrat", sans-serif' }}
-          >
-            Current Coastal Status
-          </h2>
+          <div className="flex items-center justify-center gap-4 mb-14">
+            <h2
+              className="text-4xl font-bold text-white text-center drop-shadow-md"
+              style={{ fontFamily: '"Montserrat", sans-serif' }}
+            >
+              Current Coastal Status
+            </h2>
+            <RefreshCw 
+              className={`h-6 w-6 text-blue-300 cursor-pointer hover:text-blue-200 ${loading ? "animate-spin" : ""}`}
+              onClick={fetchData}
+            />
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {/* Card 1 */}
-            <Card className="border-l-4 border-destructive bg-slate-900/50 text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            {/* Card 1 - Active Alerts */}
+            <Card className="border-l-4 border-destructive bg-slate-900/60 text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle
                   className="text-sm font-medium text-blue-200"
                   style={{ fontFamily: '"Montserrat", sans-serif' }}
                 >
                   Active Alerts
                 </CardTitle>
-                <AlertTriangle className="h-5 w-5 text-destructive animate-bounce" />
+                <AlertTriangle className="h-4 w-4 text-destructive" />
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-destructive">2</div>
-                <p className="text-sm text-red-200 mt-1">Immediate attention required</p>
+                <div className="text-2xl font-bold text-destructive">
+                  {loading ? "--" : stats.alerts}
+                </div>
+                <p className="text-xs text-blue-200">Total alerts</p>
               </CardContent>
             </Card>
 
-            {/* Card 2 */}
-            <Card className="border-l-4 border-primary bg-slate-900/50 text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            {/* Card 2 - Sensors Online */}
+            <Card className="border-l-4 border-green-500 bg-slate-900/60 text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle
                   className="text-sm font-medium text-blue-200"
                   style={{ fontFamily: '"Montserrat", sans-serif' }}
                 >
                   Sensors Online
                 </CardTitle>
-                <Activity className="h-5 w-5 text-primary" />
+                <Activity className="h-4 w-4 text-green-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-primary">25</div>
-                <p className="text-sm text-blue-200 mt-1">All stations operational</p>
+                <div className="text-2xl font-bold text-green-500">
+                  {loading ? "--" : stats.sensors}
+                </div>
+                <p className="text-xs text-blue-200">All stations operational</p>
               </CardContent>
             </Card>
 
-            {/* Card 3 */}
-            <Card className="border-l-4 border-primary bg-slate-900/50 text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            {/* Card 3 - Water Level */}
+            <Card className="border-l-4 border-blue-500 bg-slate-900/60 text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle
                   className="text-sm font-medium text-blue-200"
                   style={{ fontFamily: '"Montserrat", sans-serif' }}
                 >
-                  Avg Water Level
+                  Water Level
                 </CardTitle>
-                <Waves className="h-5 w-5 text-primary" />
+                <Waves className="h-4 w-4 text-blue-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-primary">1.2m</div>
-                <p className="text-sm text-blue-200 mt-1">Stable within averages</p>
+                <div className="text-2xl font-bold text-blue-500">
+                  {loading ? "--" : stats.avg_water_level.toFixed(1)}m
+                </div>
+                <p className="text-xs text-blue-200">Average (Top 10)</p>
               </CardContent>
             </Card>
 
-            {/* Card 4 */}
-            <Card className="border-l-4 border-green-500 bg-slate-900/50 text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+            {/* Card 4 - Wind Speed */}
+            <Card className="border-l-4 border-cyan-500 bg-slate-900/60 text-white shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle
                   className="text-sm font-medium text-blue-200"
                   style={{ fontFamily: '"Montserrat", sans-serif' }}
                 >
-                  System Status
+                  Wind Speed
                 </CardTitle>
-                <div className="h-3 w-3 bg-green-500 rounded-full animate-pulse"></div>
+                <Wind className="h-4 w-4 text-cyan-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-3xl font-bold text-green-500">Operational</div>
-                <p className="text-sm text-blue-200 mt-1">All models running</p>
+                <div className="text-2xl font-bold text-cyan-500">
+                  {loading ? "--" : stats.avg_wind_speed.toFixed(1)}km/h
+                </div>
+                <p className="text-xs text-blue-200">Average (Top 10)</p>
               </CardContent>
             </Card>
+          </div>
+
+          {/* Last updated time */}
+          <div className="text-center mt-8">
+            <p className="text-sm text-blue-300">
+              {loading ? "Loading data..." : `Last updated: ${new Date().toLocaleTimeString()}`}
+            </p>
           </div>
         </div>
       </section>

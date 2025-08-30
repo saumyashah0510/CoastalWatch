@@ -64,10 +64,10 @@ L.Marker.prototype.options.icon = DefaultIcon;
 // Fit bounds component
 function FitBounds({ sensors }: { sensors: Sensor[] }) {
   const map = useMap();
-  
+
   useEffect(() => {
     if (!sensors || sensors.length === 0) return;
-    
+
     try {
       const bounds = L.latLngBounds(
         sensors.map(sensor => [sensor.latitude, sensor.longitude])
@@ -77,26 +77,26 @@ function FitBounds({ sensors }: { sensors: Sensor[] }) {
       console.error("Error fitting bounds:", e);
     }
   }, [map, sensors]);
-  
+
   return null;
 }
 
 export default function Dashboard() {
   const [alerts, setAlerts] = useState<AlertData[]>([]);
   const [sensors, setSensors] = useState<Sensor[]>([]);
-  const [stats, setStats] = useState<ReadingStats>({ 
-    avg_water_level: 0, 
-    avg_wind_speed: 0 
+  const [stats, setStats] = useState<ReadingStats>({
+    avg_water_level: 0,
+    avg_wind_speed: 0
   });
   const [loading, setLoading] = useState(true);
   const [autoRunEnabled, setAutoRunEnabled] = useState(false);
   const [countdown, setCountdown] = useState(10);
-  const [notification, setNotification] = useState<{message: string, severity: string, show: boolean}>({
+  const [notification, setNotification] = useState<{ message: string, severity: string, show: boolean }>({
     message: "",
     severity: "",
     show: false
   });
-  
+
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const countdownRef = useRef<NodeJS.Timeout | null>(null);
   const notificationRef = useRef<NodeJS.Timeout | null>(null);
@@ -105,12 +105,12 @@ export default function Dashboard() {
   // Show notification function
   const showNotification = useCallback((message: string, severity: string) => {
     setNotification({ message, severity, show: true });
-    
+
     // Auto hide after 5 seconds
     if (notificationRef.current) {
       clearTimeout(notificationRef.current);
     }
-    
+
     notificationRef.current = setTimeout(() => {
       setNotification(prev => ({ ...prev, show: false }));
     }, 5000);
@@ -120,39 +120,39 @@ export default function Dashboard() {
   const runSimulationAndAnalysis = useCallback(async () => {
     try {
       console.log("Running simulation and analysis...");
-      
+
       // 1. Get simulated reading
       const simulatedReading = await axios.get(
         "http://127.0.0.1:8000/ai/get_simulated_reading_extended/"
       );
-      
+
       // 2. Analyze the reading
       const analysisResult = await axios.post(
         "http://127.0.0.1:8000/ai/analyze_reading_extended/",
         simulatedReading.data
       );
-      
+
       console.log("Analysis result:", analysisResult.data);
-      
+
       // 3. If an alert was created, refresh the alerts data and show notification
       if (analysisResult.data.is_anomaly) {
         const alertsResponse = await axios.get("http://127.0.0.1:8000/dashboard/alerts");
         const newAlerts = alertsResponse.data;
         setAlerts(newAlerts);
-        
+
         // Show notification if a new alert was created
         if (newAlerts.length > previousAlertsCount.current) {
           const latestAlert = newAlerts[0]; // Get the most recent alert
           const severityText = latestAlert.severity.toUpperCase();
           showNotification(`${severityText} ALERT: ${latestAlert.message} at ${latestAlert.location_name}`, latestAlert.severity);
         }
-        
+
         previousAlertsCount.current = newAlerts.length;
       }
-      
+
       // 4. Refresh the dashboard data
       fetchData();
-      
+
     } catch (error) {
       console.error("Error in simulation/analysis:", error);
     }
@@ -176,7 +176,7 @@ export default function Dashboard() {
       // Start the interval (10 minutes = 600000 milliseconds)
       intervalRef.current = setInterval(runSimulationAndAnalysis, 10000);
       setAutoRunEnabled(true);
-      
+
       // Start countdown timer
       countdownRef.current = setInterval(() => {
         setCountdown(prev => {
@@ -186,7 +186,7 @@ export default function Dashboard() {
           return prev - 1;
         });
       }, 1000);
-      
+
       // Run immediately once when starting
       runSimulationAndAnalysis();
     }
@@ -218,23 +218,23 @@ export default function Dashboard() {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      
+
       // Fetch all data in parallel
       const [alertsResponse, sensorsResponse, statsResponse] = await Promise.all([
         axios.get("http://127.0.0.1:8000/dashboard/alerts"),
         axios.get("http://127.0.0.1:8000/dashboard/sensors"),
         axios.get("http://127.0.0.1:8000/dashboard/readings/averages?limit=10")
       ]);
-      
+
       // Store all alerts but only display top 3 in the detailed view
       setAlerts(alertsResponse.data);
       previousAlertsCount.current = alertsResponse.data.length;
       setSensors(sensorsResponse.data);
       setStats(statsResponse.data);
-      
+
     } catch (error) {
       console.error("Error fetching data:", error);
-      
+
       // Fallback mock data
       setAlerts([
         {
@@ -246,7 +246,7 @@ export default function Dashboard() {
           location_name: "Marina Bay"
         }
       ]);
-      
+
       setSensors([
         {
           id: 1,
@@ -282,10 +282,10 @@ export default function Dashboard() {
           last_maintenance: "2023-12-15"
         }
       ]);
-      
-      setStats({ 
-        avg_water_level: 1.2, 
-        avg_wind_speed: 24 
+
+      setStats({
+        avg_water_level: 1.2,
+        avg_wind_speed: 24
       });
     } finally {
       setLoading(false);
@@ -377,13 +377,13 @@ export default function Dashboard() {
   const getNotificationColor = (severity: string) => {
     switch (severity) {
       case "critical":
-        return "border-l-destructive bg-destructive/20";
+        return "border-l-destructive bg-destructive/80"; // Increased from /20 to /80
       case "high":
-        return "border-l-secondary bg-secondary/20";
+        return "border-l-secondary bg-secondary/80"; // Increased from /20 to /80
       case "medium":
-        return "border-l-orange-500 bg-orange-500/20";
+        return "border-l-orange-500 bg-orange-500/80"; // Increased from /20 to /80
       default:
-        return "border-l-blue-500 bg-blue-500/20";
+        return "border-l-blue-500 bg-blue-500/80"; // Increased from /20 to /80
     }
   };
 
@@ -425,57 +425,57 @@ export default function Dashboard() {
     : [1.28, 103.85];
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-[#0a192f]">
-      {/* Particles background */}
-      <Particles
-        id="tsparticles"
-        init={particlesInit}
-        options={particlesOptions}
-        className="absolute inset-0 z-0 pointer-events-none"
-      />
+  <div className="min-h-screen relative overflow-hidden bg-[#0a192f]">
+    {/* Particles background */}
+    <Particles
+      id="tsparticles"
+      init={particlesInit}
+      options={particlesOptions}
+      className="absolute inset-0 z-0 pointer-events-none"
+    />
 
-      {/* Notification Toast */}
-      {notification.show && (
-        <div className={`fixed top-4 right-4 z-50 max-w-md animate-in slide-in-from-right-10 duration-300`}>
-          <div className={`border-l-4 rounded-lg p-4 shadow-lg ${getNotificationColor(notification.severity)}`}>
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center">
-                  <AlertTriangle className="h-5 w-5 mr-2" />
-                  <p className="font-semibold text-white">{notification.message}</p>
-                </div>
+    {/* Notification Toast - Made more opaque */}
+    {notification.show && (
+      <div className={`fixed top-4 right-4 z-50 max-w-md animate-in slide-in-from-right-10 duration-300`}>
+        <div className={`border-l-4 rounded-lg p-4 shadow-lg ${getNotificationColor(notification.severity)} backdrop-blur-sm`}>
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <div className="flex items-center">
+                <AlertTriangle className="h-5 w-5 mr-2" />
+                <p className="font-semibold text-white">{notification.message}</p>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="ml-4 text-white hover:text-white hover:bg-white/10"
-                onClick={() => setNotification(prev => ({ ...prev, show: false }))}
-              >
-                <X className="h-4 w-4" />
-              </Button>
             </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="ml-4 text-white hover:text-white hover:bg-white/20" // Increased hover opacity
+              onClick={() => setNotification(prev => ({ ...prev, show: false }))}
+            >
+              <X className="h-4 w-4" />
+            </Button>
           </div>
         </div>
-      )}
+      </div>
+    )}
 
       {/* Dashboard content */}
       <div className="relative z-10 p-6 space-y-6 text-white">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold">Coastal Monitoring Dashboard</h1>
           <div className="flex items-center gap-2">
-            <Button 
+            <Button
               variant={autoRunEnabled ? "default" : "outline"}
-              size="sm" 
+              size="sm"
               onClick={toggleAutoRun}
               className="bg-slate-800/50 border-white/20"
             >
               <RefreshCw className={`h-4 w-4 mr-2 ${autoRunEnabled ? "animate-spin" : ""}`} />
               {autoRunEnabled ? "Auto Run ON" : "Auto Run OFF"}
             </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={fetchData} 
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={fetchData}
               disabled={loading}
               className="bg-slate-800/50 border-white/20"
             >
