@@ -172,7 +172,7 @@ export default function About() {
         <Card className="bg-slate-900/50 text-white shadow-lg">
           <CardHeader>
             <Users className="h-6 w-6 text-primary inline-block mr-2" />
-            <CardTitle>Our Partners</CardTitle>
+            <CardTitle>Inspiration</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-3">
             <Badge variant="secondary">NOAA</Badge>

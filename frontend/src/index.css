@@ -24,6 +24,10 @@
     --accent-foreground: 210 40% 98%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
+    
+    /* ADD ORANGE COLOR TOKENS */
+    --orange: 24.6 95% 53.1%;
+    --orange-foreground: 60 9.1% 97.8%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
@@ -61,6 +65,11 @@
     --accent-foreground: 210 40% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
+    
+    /* ADD ORANGE COLOR TOKENS FOR DARK MODE */
+    --orange: 20.5 90.2% 48.2%;
+    --orange-foreground: 60 9.1% 97.8%;
+
     --border: 220 20% 15%;
     --input: 220 20% 15%;
     --ring: 199 89% 48%;
@@ -127,4 +136,5 @@
     background: hsl(var(--sidebar-primary));
     border-radius: 0 4px 4px 0;
   }
+
 }

@@ -98,14 +98,7 @@ export default function AlertsHistory() {
 
       {/* Main content */}
       <div className="relative z-10 p-6 space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold">Alert History</h1>
-          <Button variant="outline" className="text-white border-blue-300 hover:bg-blue-500/20">
-            <Download className="h-4 w-4 mr-2" />
-            Export CSV
-          </Button>
-        </div>
-
+        
         {/* Filters */}
         <Card className="bg-slate-900/50 backdrop-blur-sm border border-white/10 text-white">
           <CardHeader>
