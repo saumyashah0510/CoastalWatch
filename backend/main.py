@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .database import engine
 from . import models
-from .api import sensors,alerts
+from .api import sensors,alerts,dashboard
 from .ai import ai_router # import other routers as you create them
 
 
@@ -23,7 +23,7 @@ app.add_middleware(
 app.include_router(sensors.router, prefix="/sensors", tags=["Sensors"])
 app.include_router(ai_router.ai_router)
 app.include_router(alerts.router,prefix="/alerts",tags=["Alerts"])
-
+app.include_router(dashboard.router)
 
 @app.get("/")
 def read_root():

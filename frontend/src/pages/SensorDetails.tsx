@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from "@/components/ui/select";
-import { Activity, MapPin, Calendar, Waves, Wind, AlertCircle, TrendingUp, TrendingDown } from "lucide-react";
+import { Activity, MapPin, Calendar, Waves, Wind, AlertCircle, TrendingUp, TrendingDown, Filter } from "lucide-react";
 
 // Types
 interface SensorReading {
@@ -166,27 +166,40 @@ export default function SensorDetails() {
         {/* Header with dropdown */}
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold">Sensor Details</h1>
-          <Select
-            value={selectedSensorId?.toString() || ""}
-            onValueChange={(v) => setSelectedSensorId(parseInt(v))}
-          >
-            <SelectTrigger className="w-64">
-              <SelectValue placeholder="Select a sensor" />
-            </SelectTrigger>
-            <SelectContent>
-              {sensors.map((sensor) => (
-                <SelectItem key={sensor.id} value={sensor.id.toString()}>
-                  {sensor.location_name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-3">
+            <Button 
+              variant="outline" 
+              className="bg-slate-900/50 border-cyan-500/30 text-cyan-200 hover:bg-cyan-500/10 hover:border-cyan-400 hover:text-white transition-all duration-300 group"
+            >
+              <Filter className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform" />
+              Filter Data
+            </Button>
+            <Select
+              value={selectedSensorId?.toString() || ""}
+              onValueChange={(v) => setSelectedSensorId(parseInt(v))}
+            >
+              <SelectTrigger className="w-64 bg-slate-900/50 border-cyan-500/30 text-cyan-200 hover:border-cyan-400 transition-colors duration-300">
+                <SelectValue placeholder="Select a sensor" />
+              </SelectTrigger>
+              <SelectContent className="bg-slate-900 border-cyan-500/30">
+                {sensors.map((sensor) => (
+                  <SelectItem 
+                    key={sensor.id} 
+                    value={sensor.id.toString()}
+                    className="text-cyan-200 hover:bg-cyan-500/20 focus:bg-cyan-500/20 focus:text-white"
+                  >
+                    {sensor.location_name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {currentSensor && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Sensor Info */}
-            <Card className="lg:col-span-1 bg-slate-900/50 border border-white/10">
+            <Card className="lg:col-span-1 bg-slate-900/50 border border-white/10 hover:border-cyan-500/30 transition-colors duration-300">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Activity className="h-5 w-5" /> Sensor Information
@@ -220,12 +233,11 @@ export default function SensorDetails() {
                     </div>
                   )}
                 </div>
-                <Button className="w-full" variant="outline">Schedule Maintenance</Button>
               </CardContent>
             </Card>
 
             {/* Map */}
-            <Card className="lg:col-span-2 bg-slate-900/50 border border-white/10">
+            <Card className="lg:col-span-2 bg-slate-900/50 border border-white/10 hover:border-cyan-500/30 transition-colors duration-300">
               <CardHeader><CardTitle>Sensor Location</CardTitle></CardHeader>
               <CardContent>
                 <MapContainer
@@ -249,14 +261,14 @@ export default function SensorDetails() {
 
         {/* Graph with Statistics */}
         {currentSensor && stats && (
-          <Card className="bg-slate-900/50 border border-white/10">
+          <Card className="bg-slate-900/50 border border-white/10 hover:border-cyan-500/30 transition-colors duration-300">
             <CardHeader>
               <CardTitle>Water & Wind Trends</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                 {/* Water Level Stats */}
-                <Card className="bg-slate-800/50 border border-white/10">
+                <Card className="bg-slate-800/50 border border-white/10 hover:border-cyan-500/30 transition-colors duration-300">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm flex items-center gap-2">
                       <Waves className="h-4 w-4" /> Water Level
@@ -294,7 +306,7 @@ export default function SensorDetails() {
                 </Card>
 
                 {/* Wind Speed Stats */}
-                <Card className="bg-slate-800/50 border border-white/10">
+                <Card className="bg-slate-800/50 border border-white/10 hover:border-cyan-500/30 transition-colors duration-300">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm flex items-center gap-2">
                       <Wind className="h-4 w-4" /> Wind Speed
@@ -332,7 +344,7 @@ export default function SensorDetails() {
                 </Card>
 
                 {/* Status Summary */}
-                <Card className="bg-slate-800/50 border border-white/10 md:col-span-2">
+                <Card className="bg-slate-800/50 border border-white/10 hover:border-cyan-500/30 transition-colors duration-300 md:col-span-2">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-sm flex items-center gap-2">
                       <AlertCircle className="h-4 w-4" /> Status Summary
