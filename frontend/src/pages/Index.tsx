@@ -142,7 +142,7 @@ const Index = () => {
             >
               <Link to="/about">Learn More</Link>
             </Button>
-            
+        
           </div>
         </div>
       </section>
